@@ -1,13 +1,29 @@
 # Undertale Game Save Converter (For PC and Switch)
-# https://github.com/tomchapin/undertale-save-converter
 
 #############################################################################################
 # Imports
 #############################################################################################
 
-import msvcrt  # For getting user input on Windows (we use this on our main menu)
-import subprocess  # For executing a shell command (we use this to clear the screen)
+import os
+import sys
 
+# Set up cross-platform single-character input
+try:
+    import msvcrt  # Windows
+    def getch():
+        return msvcrt.getch()
+except ImportError:
+    import tty     # Linux / Mac
+    import termios
+    def getch():
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch.encode('utf-8')
 
 #############################################################################################
 # Helper Methods
@@ -16,9 +32,9 @@ import subprocess  # For executing a shell command (we use this to clear the scr
 def clear_screen():
     """
     Clears the terminal screen.
-    Only compatible with Windows.
+    Compatible with Windows, Linux, and Mac.
     """
-    return subprocess.call("cls", shell=True) == 0
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 
 #############################################################################################
@@ -30,7 +46,7 @@ def pc_file_to_switch_text(input_file):
     Converts all of the PC file's lines to a single line of text meant for the Switch game save file
     """
     result = ''
-    file_contents = input_file.read()
+    file_contents = input_file.readlines() # Changed to readlines() to iterate over lines properly
 
     for cnt, line in enumerate(file_contents):
         # Remove line break character from end of line
@@ -53,7 +69,7 @@ def pc_undertale_ini_to_switch_text(input_file):
     Converts all of the undertale.ini file's lines to a single line of text meant for the Switch game save file
     """
     result = ''
-    file_contents = input_file.read()
+    file_contents = input_file.readlines() # Changed to readlines() to iterate over lines properly
 
     for cnt, line in enumerate(file_contents):
         # Remove line break character from end of line
@@ -62,11 +78,15 @@ def pc_undertale_ini_to_switch_text(input_file):
         if not new_line.startswith("["):
             # Escape quotes on any non-header lines
             # For Example: Room="31.000000"
-            #     Becomes: Room=\"31.000000\"
-            r = new_line.split("=")
-            p = r[1].split('"')
-            p = p[1]
-            new_line = r[0] + '=\\"' + p + '\\"'
+            #      Becomes: Room=\"31.000000\"
+            if "=" in new_line:
+                r = new_line.split("=")
+                p = r[1].split('"')
+                if len(p) > 1:
+                    p = p[1]
+                else:
+                    p = p[0]
+                new_line = r[0] + '=\\"' + p + '\\"'
 
         # Add on line break characters to end of the line
         new_line = new_line + "\\r\\n"
@@ -189,7 +209,7 @@ def display_menu():
     print("")
     print("  1. Convert from PC to Switch")
     print("     Make sure you have copied your game's file0, file9, and undertale.ini files to this folder.")
-    print("     (These files are typically located in your system's %LocalAppData%\\UNDERTALE\\ folder)")
+    print("     (On Linux/Proton, these are often located in ~/.config/UNDERTALE/ or your Wine prefix)")
     print("")
     print("  2. Convert from Switch to PC")
     print("     Make sure you have the undertale.sav file copied from your Nintendo Switch.")
@@ -199,7 +219,7 @@ def display_menu():
     print("")
     print("  Press (1) or (2) to select a menu option, or press (Escape) to exit:")
 
-    user_input = msvcrt.getch()
+    user_input = getch()
     if user_input == b'1':
         # 1 was pressed
         convert_from_pc_to_switch()
