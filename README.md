@@ -19,10 +19,9 @@ This version is a complete re-write, and features full bi-directional conversion
 
 
 ### Converting from PC to Switch
-1. Make sure you have copied your game's file0, file9, and undertale.ini files into the folder with the undertale_save_converter.exe file.
-   (These files are typically located in your system's %LocalAppData%\UNDERTALE\ folder)
-2. Use your command prompt to browse to the folder, then execute `undertale_save_converter.exe` and select the first menu option.
-3. Alternately (if you want to run the script via python), execute `python undertale_save_converter.py` (requires Python 3 to be installed).
+1. Make sure you have copied your game's file0, file9, and undertale.ini files into the folder with the converter script or binary.
+   (These files are typically located in Linux under: ~/.config/UNDERTALE or in Windows in: %LocalAppData%\UNDERTALE\)
+2. Call the python script without arguments and follow on or (if using windows) use your command prompt to browse to the folder, then execute `undertale_save_converter.exe` and select the first menu option.
 
 
 ### Converting from Switch to PC
@@ -30,11 +29,10 @@ This version is a complete re-write, and features full bi-directional conversion
    This file can be obtained from a modded switch by using tools such as Checkpoint or JKSM.
    - Checkpoint: https://gbatemp.net/threads/checkpoint-a-simple-and-fast-save-manager.485591
    - JKSM: https://github.com/J-D-K/JKSM
-2. Use your command prompt to browse to the folder, then execute `undertale_save_converter.exe` and select the second menu option.
-3. Alternately (if you want to run the script via python), execute `python undertale_save_converter.py` (requires Python 3 to be installed).
+2. Call the python script without arguments and follow on or (if using windows) use your command prompt to browse to the folder, then execute `undertale_save_converter.exe` and select the second menu option.
 
 
-### Compiling the executable (if you don't want to download and use the supplied undertale_save_converter.exe file)
+### Compiling the executable for Windows(if you don't want to download and use the supplied undertale_save_converter.exe file)
 1. Install Python 3.4 (x86) on a Windows computer, making sure you select the option to add Python to your path.
 2. Install the Py2Exe utility (`py -3.4 -m pip install py2exe`) - https://pypi.org/project/py2exe/
 3. Install pywin32-221.win32-py3.4.exe from https://sourceforge.net/projects/pywin32/files/pywin32/Build%20221/
